@@ -9,8 +9,7 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-    },
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "linebreak-style": 0
     }
+
 }

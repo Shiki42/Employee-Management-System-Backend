@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require('express');
 require('dotenv').config();
 const {signup, signin, invite} = require('./handlers/auth');
@@ -7,6 +8,6 @@ app.use(express.json());
 app.get('/', invite);
 
 app.listen(3050, () => {
-    console.log('Example app listening on port 3000!');
-    }
+  console.log('Example app listening on port 3000!');
+},
 );

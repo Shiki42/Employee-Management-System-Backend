@@ -9,11 +9,10 @@ const fileSchema = new Schema({
     type: String,
     enum: ['pdf', 'doc', 'docx', 'jpg', 'png'],
   },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-    },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
 
 });
-
-const File = mongoose.model('File', fileSchema);
+module.exports = mongoose.model('File', fileSchema);
