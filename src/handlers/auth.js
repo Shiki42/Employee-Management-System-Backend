@@ -4,19 +4,21 @@ const nodemailer = require('nodemailer');
 
 const signup = async (req, res) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    // const token = req.headers.authorization.split(' ')[1];
 
-    if (decoded.email !== req.body.email) {
+
+    const {name, email, password, token} = req.body;
+    const DBtoken = db.Token.findOne({token: token});
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    if (decoded.email !== email || DBtoken.expireDate < Date.now()) {
       return res.status(400).json({
         message: 'Invalid token',
       });
     }
 
-    const user = await db.User.create(req.body);
-    const {
-      name, email, role,
-    } = user;
+    const user = await db.User.create({email, password, name});
+    console.log(user);
+    const {role} = user;
     const jwtToken = jwt.sign(
         {
           name,
@@ -31,15 +33,15 @@ const signup = async (req, res) => {
       jwtToken,
     });
   } catch (err) {
-    return res.status(400).json({
-    });
+    console.log(err);
+    return res.status(400).json({message: 'Invalid token'});
   }
 };
 
 const signin = async (req, res, next) => {
   const {name, password} = req.body;
   try {
-    const user = await db.User.findOne({email});
+    const user = await db.User.findOne({name});
     if (!user) {
       return res.status(400).json({
         message: 'User not found',
@@ -72,7 +74,8 @@ const signin = async (req, res, next) => {
   }
 };
 
-
+// Invite new employee
+// params: req.body.email
 const invite = async (req, res) => {
   // Generate a unique token
   const email = req.body.email;

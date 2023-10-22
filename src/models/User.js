@@ -7,6 +7,7 @@ const userSchema = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   email: {
     type: String,
@@ -17,22 +18,25 @@ const userSchema = new Schema({
     type: String,
     enum: ['employee', 'HR', 'admin'],
     default: 'employee',
-    required: true,
   },
   password: {
     type: String,
     required: true,
   },
+  applications: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Application',
+  }],
   documents: [{
     type: Schema.Types.ObjectId,
     ref: 'Document',
   }],
-  visaStatus: {
-    type: String,
-    enum: ['citizen', 'green card', 'H1B', 'F1'],
-    default: 'citizen',
-    required: true,
-  },
+  // visaStatus: {
+  //   type: String,
+  //   enum: ['citizen', 'green card', 'H1B', 'F1'],
+  //   default: 'citizen',
+  //   required: true,
+  // },
   applications: [{
     type: Schema.Types.ObjectId,
     ref: 'Application',

@@ -1,21 +1,29 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+
+const checkRequired = () => {
+  return this.status !== 'draft';
+};
 const applicationSchema = new Schema({
   status: {
     type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
+    enum: ['draft', 'pending', 'approved', 'rejected'],
+    default: 'draft',
+  },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
   },
   name: {
-    required: true,
+    required: checkRequired,
     fisrtName: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     lastName: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     middleName: {
       type: String,
@@ -28,53 +36,53 @@ const applicationSchema = new Schema({
     type: String,
   },
   address: {
-    required: true,
+    required: checkRequired,
     building: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     street: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     city: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     state: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     zip: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: checkRequired,
   },
   email: {
     type: String,
-    required: true,
+    required: checkRequired,
   },
   SSN: {
     type: String,
-    required: true,
+    required: checkRequired,
   },
   DOB: {
     type: Date,
-    required: true,
+    required: checkRequired,
   },
   gender: {
     type: String,
     enum: ['male', 'female', 'i do not wish to answer'],
-    required: true,
+    required: checkRequired,
   },
   workAuth: {
     type: String,
     enum: ['citizen', 'green card', 'H1B/L2/H4', 'F1(CPT/OPT)', 'other'],
-    required: true,
+    required: checkRequired,
   },
   workAuthOther: {
     type: String,
@@ -89,11 +97,11 @@ const applicationSchema = new Schema({
     name: {
       fisrtName: {
         type: String,
-        required: true,
+        required: checkRequired,
       },
       lastName: {
         type: String,
-        required: true,
+        required: checkRequired,
       },
       middleName: {
         type: String,
@@ -101,19 +109,25 @@ const applicationSchema = new Schema({
     },
     phoneNumber: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     email: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
     relationship: {
       type: String,
-      required: true,
+      required: checkRequired,
     },
   },
+});
 
-
+applicationSchema.pre('validate', function(next) {
+  if (this.status === 'draft') {
+    // Bypass Mongoose's automatic validation
+    this.$__.validationError = null;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Application', applicationSchema);
