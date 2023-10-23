@@ -2,28 +2,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 
-const checkRequired = () => {
-  return this.status !== 'draft';
-};
+// const checkRequired = () => {
+//   return this.status !== 'draft';
+// };
 const applicationSchema = new Schema({
   status: {
     type: String,
-    enum: ['draft', 'pending', 'approved', 'rejected'],
-    default: 'draft',
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
   },
   creator: {
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
   name: {
-    required: checkRequired,
-    fisrtName: {
+    firstName: {
       type: String,
-      required: checkRequired,
+      required: true,
     },
     lastName: {
       type: String,
-      required: checkRequired,
+      required: true,
     },
     middleName: {
       type: String,
@@ -36,53 +35,50 @@ const applicationSchema = new Schema({
     type: String,
   },
   address: {
-    required: checkRequired,
     building: {
       type: String,
-      required: checkRequired,
     },
     street: {
       type: String,
-      required: checkRequired,
     },
     city: {
       type: String,
-      required: checkRequired,
     },
     state: {
       type: String,
-      required: checkRequired,
     },
     zip: {
       type: String,
-      required: checkRequired,
     },
   },
   phoneNumber: {
     type: String,
-    required: checkRequired,
+    required: true,
+  },
+  workPhoneNumber: {
+    type: String,
   },
   email: {
     type: String,
-    required: checkRequired,
+    required: true,
   },
   SSN: {
     type: String,
-    required: checkRequired,
+    required: true,
   },
   DOB: {
     type: Date,
-    required: checkRequired,
+    required: true,
   },
   gender: {
     type: String,
     enum: ['male', 'female', 'i do not wish to answer'],
-    required: checkRequired,
+    required: true,
   },
   workAuth: {
     type: String,
     enum: ['citizen', 'green card', 'H1B/L2/H4', 'F1(CPT/OPT)', 'other'],
-    required: checkRequired,
+    required: true,
   },
   workAuthOther: {
     type: String,
@@ -95,13 +91,13 @@ const applicationSchema = new Schema({
   },
   referr: {
     name: {
-      fisrtName: {
+      firstName: {
         type: String,
-        required: checkRequired,
+        required: true,
       },
       lastName: {
         type: String,
-        required: checkRequired,
+        required: true,
       },
       middleName: {
         type: String,
@@ -109,16 +105,47 @@ const applicationSchema = new Schema({
     },
     phoneNumber: {
       type: String,
-      required: checkRequired,
     },
     email: {
       type: String,
-      required: checkRequired,
     },
     relationship: {
       type: String,
-      required: checkRequired,
+      required: true,
     },
+  },
+  emergencyContact: [{
+    name: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+      },
+      middleName: {
+        type: String,
+      },
+    },
+    phoneNumber: {
+      type: String,
+    },
+    email: {
+      type: String,
+    },
+    relationship: {
+      type: String,
+      required: true,
+    },
+  }],
+  workAuthFile: {
+    type: Schema.Types.ObjectId,
+    ref: 'File',
+  },
+  driverLicense: {
+    type: Schema.Types.ObjectId,
+    ref: 'File',
   },
 });
 

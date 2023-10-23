@@ -23,10 +23,10 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  applications: [{
+  application: {
     type: Schema.Types.ObjectId,
     ref: 'Application',
-  }],
+  },
   documents: [{
     type: Schema.Types.ObjectId,
     ref: 'Document',
@@ -37,10 +37,6 @@ const userSchema = new Schema({
   //   default: 'citizen',
   //   required: true,
   // },
-  applications: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Application',
-  }],
 });
 
 userSchema.pre('save', async function(next) {

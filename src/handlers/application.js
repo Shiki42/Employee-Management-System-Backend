@@ -1,16 +1,12 @@
 const db = require('../models');
 
-const createApplication = async (req, res, next) => {
+const getApplicationsById = async (req, res, next) => {
   try {
-    const author = await db.User.find({name: req.body.name});
+    const application = await db.Application.findOne({_id: req.params.id});
 
-    if (!author) {
-      return res.status(404).json({message: 'User not found'});
+    if (!application) {
+      return res.status(404).json({message: 'Application not found'});
     }
-
-    const application = await db.Application.create({creator: author._id});
-    author.applications.push(application._id);
-    await author.save();
 
     return res.status(200).json({
       application,
@@ -19,6 +15,7 @@ const createApplication = async (req, res, next) => {
     next(err);
   }
 };
+
 
 const updateApplication = async (req, res, next) => {
   try {
@@ -44,17 +41,19 @@ const updateApplication = async (req, res, next) => {
   }
 };
 
-const submitApplication = async (req, res) => {
+const createApplication = async (req, res, next) => {
   try {
-    const application = await db.Application.findOne({_id: req.params.id});
+    const author = await db.User.findOne({name: req.body.username});
 
-    if (!application) {
-      return res.status(404).json({message: 'Application not found'});
+    if (!author) {
+      return res.status(404).json({message: 'User not found'});
     }
 
-    Object.assign(application, req.body.craft);
-
-    await application.save();
+    const application = await db.Application.create({...req.body,
+      creator: author._id});
+    console.log(author);
+    author.applications.push(application._id);
+    await author.save();
 
     return res.status(200).json({
       application,
@@ -64,23 +63,50 @@ const submitApplication = async (req, res) => {
   }
 };
 
-const findApplicationsById = async (req, res, next) => {
-  try {
-    const application = await db.Application.findOne({_id: req.params.id});
 
-    if (!application) {
-      return res.status(404).json({message: 'Application not found'});
-    }
+// const createApplication = async (req, res, next) => {
+//   try {
+//     const author = await db.User.find({name: req.body.name});
 
-    return res.status(200).json({
-      application,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+//     if (!author) {
+//       return res.status(404).json({message: 'User not found'});
+//     }
 
-const findApplicationsByUser = async (req, res, next) => {
+//     const application = await db.Application.create({creator: author._id});
+//     author.applications.push(application._id);
+//     await author.save();
+
+//     return res.status(200).json({
+//       application,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+
+// const submitApplication = async (req, res) => {
+//   try {
+//     const application = await db.Application.findOne({_id: req.params.id});
+
+//     if (!application) {
+//       return res.status(404).json({message: 'Application not found'});
+//     }
+
+//     Object.assign(application, req.body.craft);
+
+//     await application.save();
+
+//     return res.status(200).json({
+//       application,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+
+const getApplicationsByUser = async (req, res, next) => {
   try {
     const author = await db.User.findOne({name: req.body.name});
 
@@ -102,5 +128,5 @@ const findApplicationsByUser = async (req, res, next) => {
   }
 };
 
-module.exports = {createApplication, updateApplication, submitApplication,
-  findApplicationsById, findApplicationsByUser};
+module.exports = {createApplication, updateApplication,
+  getApplicationsById, getApplicationsByUser};

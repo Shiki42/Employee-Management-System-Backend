@@ -49,9 +49,11 @@ const signin = async (req, res, next) => {
     }
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
-      const {role} = user;
+      const application = await db.Application.findOne({creator: user._id});
+      const {role, email} = user;
       const token = jwt.sign(
           {
+            email,
             name,
             role,
           },
@@ -59,6 +61,9 @@ const signin = async (req, res, next) => {
       );
       return res.status(200).json({
         name,
+        email,
+        applicationId: application?._id || null,
+        applicationStatus: application?.status || null,
         role,
         token,
       });
