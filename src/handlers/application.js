@@ -28,7 +28,7 @@ const updateApplication = async (req, res, next) => {
     }
 
     // Update the application with fields from req.body.craft
-    Object.assign(application, req.body.craft);
+    Object.assign(application, req.body);
 
     // Save the application to persist the changes
     await application.save();
@@ -52,7 +52,7 @@ const createApplication = async (req, res, next) => {
     const application = await db.Application.create({...req.body,
       creator: author._id});
     console.log(author);
-    author.applications.push(application._id);
+    author.application = application._id;
     await author.save();
 
     return res.status(200).json({

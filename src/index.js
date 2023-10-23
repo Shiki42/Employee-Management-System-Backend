@@ -7,7 +7,8 @@ const {signup, signin, invite} = require('./handlers/auth');
 const {createApplication, updateApplication,
   getApplicationsById, getApplicationsByUser} =
   require('./handlers/application');
-
+const {createProfile, updateProfile} = require('./handlers/profile');
+const {errorHandler} = require('./middlewares/error');
 const app = express();
 
 app.use(express.json());
@@ -20,12 +21,16 @@ app.post('/api/user/invite', invite);
 app.post('/api/user/signup', signup);
 app.post('/api/user/signin', signin);
 
+app.get('/api/application/:id', getApplicationsById);
+app.get('/api/user/:username/application', getApplicationsByUser);
 app.post('/api/application', createApplication);
 app.put('/api/application/:id', updateApplication);
-// app.post('/api/applications/:id/submit', submitApplication);
-app.get('/api/application/:id', getApplicationsById);
-app.get('/api/application', getApplicationsByUser);
 
+app.get('/api/user/:username/profile', getApplicationsByUser);
+app.post('/api/profile', createProfile);
+app.put('/api/profile', updateProfile);
+
+app.use(errorHandler);
 app.listen(3050, () => {
   console.log('Example app listening on port 3050!');
 },

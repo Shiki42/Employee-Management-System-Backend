@@ -3,6 +3,7 @@ const User = require('./User');
 const Token = require('./Token');
 const File = require('./File');
 const Application = require('./Application');
+const Profile = require('./Profile');
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.DATABASE_URI, {
@@ -16,4 +17,4 @@ const connectDB = async () => {
 
 connectDB();
 
-module.exports = {User, Token, File, Application};
+module.exports = {User, Token, File, Application, Profile};

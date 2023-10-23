@@ -5,16 +5,7 @@ const Schema = mongoose.Schema;
 // const checkRequired = () => {
 //   return this.status !== 'draft';
 // };
-const applicationSchema = new Schema({
-  status: {
-    type: String,
-    enum: ['pending', 'approved', 'rejected'],
-    default: 'pending',
-  },
-  creator: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
+const profileSchema = new Schema({
   name: {
     firstName: {
       type: String,
@@ -149,6 +140,4 @@ const applicationSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Application', applicationSchema);
-
-
+module.exports = mongoose.model('Profile', profileSchema);

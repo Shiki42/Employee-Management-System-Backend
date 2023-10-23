@@ -27,6 +27,10 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Application',
   },
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: 'Profile',
+  },
   documents: [{
     type: Schema.Types.ObjectId,
     ref: 'Document',
