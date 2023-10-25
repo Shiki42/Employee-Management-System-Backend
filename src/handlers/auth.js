@@ -2,6 +2,7 @@ const db = require('../models');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
+
 const signup = async (req, res) => {
   try {
     // const token = req.headers.authorization.split(' ')[1];
@@ -92,7 +93,7 @@ const invite = async (req, res) => {
         expiresIn: '3h',
       });
 
-  const registrationLink = `http://localhost:5173/register?token=${token}`;
+  const registrationLink = `http://localhost:5173/register?token=${token}&email=${encodeURIComponent(email)}`;
 
   // Create a transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({

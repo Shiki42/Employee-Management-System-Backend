@@ -51,7 +51,7 @@ const createApplication = async (req, res, next) => {
 
     const application = await db.Application.create({...req.body,
       creator: author._id});
-    console.log(author);
+
     author.application = application._id;
     await author.save();
 

@@ -9,6 +9,9 @@ const {createApplication, updateApplication,
   require('./handlers/application');
 const {createProfile, updateProfile} = require('./handlers/profile');
 const {errorHandler} = require('./middlewares/error');
+
+const documentRoutes = require('./routes/documentRoutes');
+
 const app = express();
 
 app.use(express.json());
@@ -29,6 +32,8 @@ app.put('/api/application/:id', updateApplication);
 app.get('/api/user/:username/profile', getApplicationsByUser);
 app.post('/api/profile', createProfile);
 app.put('/api/profile', updateProfile);
+
+app.use('/api/document', documentRoutes);
 
 app.use(errorHandler);
 app.listen(3050, () => {

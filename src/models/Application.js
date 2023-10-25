@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
+const {referrer, emergencyContact, workAuth} = require('./SharedFields');
 
 // const checkRequired = () => {
 //   return this.status !== 'draft';
@@ -31,8 +31,9 @@ const applicationSchema = new Schema({
       type: String,
     },
   },
-  profilePicture: {
-    type: String,
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'Document',
   },
   address: {
     building: {
@@ -75,70 +76,14 @@ const applicationSchema = new Schema({
     enum: ['male', 'female', 'i do not wish to answer'],
     required: true,
   },
-  workAuth: {
+  citizenship: {
     type: String,
-    enum: ['citizen', 'green card', 'H1B/L2/H4', 'F1(CPT/OPT)', 'other'],
+    enum: ['citizen', 'green card', 'other'],
     required: true,
   },
-  workAuthOther: {
-    type: String,
-  },
-  workAuthStartDate: {
-    type: String,
-  },
-  workAuthEndDate: {
-    type: String,
-  },
-  referr: {
-    name: {
-      firstName: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
-      },
-      middleName: {
-        type: String,
-      },
-    },
-    phoneNumber: {
-      type: String,
-    },
-    email: {
-      type: String,
-    },
-    relationship: {
-      type: String,
-      required: true,
-    },
-  },
-  emergencyContact: [{
-    name: {
-      firstName: {
-        type: String,
-        required: true,
-      },
-      lastName: {
-        type: String,
-        required: true,
-      },
-      middleName: {
-        type: String,
-      },
-    },
-    phoneNumber: {
-      type: String,
-    },
-    email: {
-      type: String,
-    },
-    relationship: {
-      type: String,
-      required: true,
-    },
-  }],
+  workAuth: workAuth,
+  referrer: referrer,
+  emergencyContacts: [emergencyContact],
   workAuthFile: {
     type: Schema.Types.ObjectId,
     ref: 'File',
