@@ -55,9 +55,9 @@ const createApplication = async (req, res, next) => {
     author.application = application._id;
     await author.save();
 
-    return res.status(200).json({
-      application,
-    });
+    return res.status(200).json(
+        application,
+    );
   } catch (err) {
     next(err);
   }

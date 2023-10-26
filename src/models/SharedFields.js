@@ -46,10 +46,12 @@ const workAuth= {
   type: String,
   enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
   workAuthStartDate: {
-    type: String,
+    type: Date,
+    required: true,
   },
   workAuthEndDate: {
-    type: String,
+    type: Date,
+    required: true,
   },
   workAuthOther: {
     type: String,
