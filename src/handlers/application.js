@@ -1,5 +1,5 @@
 const db = require('../models');
-
+const moment = require('moment');
 const getApplicationsById = async (req, res, next) => {
   try {
     const application = await db.Application.findOne({_id: req.params.id});
@@ -26,7 +26,8 @@ const updateApplication = async (req, res, next) => {
     if (!application) {
       return res.status(404).json({message: 'Application not found'});
     }
-
+    req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    console.log(req.body);
     // Update the application with fields from req.body.craft
     Object.assign(application, req.body);
 
@@ -49,6 +50,7 @@ const createApplication = async (req, res, next) => {
       return res.status(404).json({message: 'User not found'});
     }
 
+    req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
     const application = await db.Application.create({...req.body,
       creator: author._id});
 
@@ -62,48 +64,6 @@ const createApplication = async (req, res, next) => {
     next(err);
   }
 };
-
-
-// const createApplication = async (req, res, next) => {
-//   try {
-//     const author = await db.User.find({name: req.body.name});
-
-//     if (!author) {
-//       return res.status(404).json({message: 'User not found'});
-//     }
-
-//     const application = await db.Application.create({creator: author._id});
-//     author.applications.push(application._id);
-//     await author.save();
-
-//     return res.status(200).json({
-//       application,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
-
-
-// const submitApplication = async (req, res) => {
-//   try {
-//     const application = await db.Application.findOne({_id: req.params.id});
-
-//     if (!application) {
-//       return res.status(404).json({message: 'Application not found'});
-//     }
-
-//     Object.assign(application, req.body.craft);
-
-//     await application.save();
-
-//     return res.status(200).json({
-//       application,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 
 const getApplicationsByUser = async (req, res, next) => {
