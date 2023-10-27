@@ -51,7 +51,7 @@ const signin = async (req, res, next) => {
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
       const application = await db.Application.findOne({creator: user._id});
-      const {role, email} = user;
+      const {role, email, visaStatus, workAuthType} = user;
       const token = jwt.sign(
           {
             email,
@@ -67,6 +67,8 @@ const signin = async (req, res, next) => {
         applicationStatus: application?.status || null,
         role,
         token,
+        visaStatus,
+        workAuthType,
       });
     }
     return res.status(400).json({
@@ -84,13 +86,13 @@ const signin = async (req, res, next) => {
 const getProfileStatus = async (req, res, next) => {
   try {
     const {token} = req.body;
-    console.log('token', token);
     const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
     const user = await db.User.findOne({email: decoded.email});
     const application = await db.Application.findOne({creator: user._id});
     return res.status(200).json({
       applicationId: application?._id || null,
       applicationStatus: application?.status || null,
+      visaStatus: user?.visaStatus || null,
     });
   } catch (err) {
     return next({

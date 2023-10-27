@@ -19,12 +19,10 @@ const getApplicationsById = async (req, res, next) => {
 
 const updateApplication = async (req, res, next) => {
   try {
-    // Find the application by _id
-    const application = await db.Application.findOne({_id: req.params.id});
+    const author = await db.User.findOne({name: req.body.username});
 
-    // Handle case where application is not found
-    if (!application) {
-      return res.status(404).json({message: 'Application not found'});
+    if (!author) {
+      return res.status(404).json({message: 'User not found'});
     }
     if (req.body.DOB) {
       req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
@@ -35,16 +33,22 @@ const updateApplication = async (req, res, next) => {
       req.body.workAuth.EndDate =
     moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
     }
+    const application = await db.Application.create({...req.body,
+      creator: author._id});
 
-    // Update the application with fields from req.body.craft
-    Object.assign(application, req.body);
+    author.applicationStatus = 'pending';
+    author.application = application._id;
+    if (req.body.workAuth) {
+      author.workAuthType = req.body.workAuth.type;
+    }
+    if (req.body.visaStatus) {
+      author.visaStatus = req.body.visaStatus;
+    }
+    await author.save();
 
-    // Save the application to persist the changes
-    await application.save();
-
-    return res.status(200).json({
-      application,
-    });
+    return res.status(200).json(
+        application,
+    );
   } catch (err) {
     next(err);
   }
@@ -69,7 +73,14 @@ const createApplication = async (req, res, next) => {
     const application = await db.Application.create({...req.body,
       creator: author._id});
 
+    author.applicationStatus = 'pending';
     author.application = application._id;
+    if (req.body.workAuth) {
+      author.workAuthType = req.body.workAuth.type;
+    }
+    if (req.body.visaStatus) {
+      author.visaStatus = req.body.visaStatus;
+    }
     await author.save();
 
     return res.status(200).json(

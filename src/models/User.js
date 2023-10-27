@@ -35,6 +35,11 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Document',
   }],
+  workAuthType: {
+    type: String,
+    enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
+    required: true,
+  },
   visaStatus: {
     status: {
       type: String,
@@ -44,8 +49,8 @@ const userSchema = new Schema({
     optReceipt: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
+        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        default: 'N/A',
       },
       docId: {
         type: Schema.Types.ObjectId,
@@ -55,8 +60,8 @@ const userSchema = new Schema({
     optEad: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
+        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        default: 'N/A',
       },
       docId: {
         type: Schema.Types.ObjectId,
@@ -66,8 +71,8 @@ const userSchema = new Schema({
     i983: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
+        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        default: 'N/A',
       },
       docId: {
         type: Schema.Types.ObjectId,
@@ -77,8 +82,8 @@ const userSchema = new Schema({
     i20: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected'],
-        default: 'pending',
+        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        default: 'N/A',
       },
       docId: {
         type: Schema.Types.ObjectId,

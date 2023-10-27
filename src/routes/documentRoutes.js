@@ -30,12 +30,16 @@ router.post('', upload.single('file'), async (req, res) => {
 
     if (type === 'optReceipt') {
       user.visaStatus.optReceipt.docId = newDocument._id;
+      user.visaStatus.optReceipt.status = 'pending';
     } else if (type === 'optEad') {
       user.visaStatus.optEad.docId = newDocument._id;
+      user.visaStatus.optEad.status = 'pending';
     } else if (type === 'i983') {
       user.visaStatus.i983.docId = newDocument._id;
+      user.visaStatus.i983.status = 'pending';
     } else if (type === 'i20') {
       user.visaStatus.i20.docId = newDocument._id;
+      user.visaStatus.i20.status = 'pending';
     } else if (type === 'driverLicense') {
       user.driverLicense = newDocument._id;
     } else if (type === 'profilePicture') {
@@ -45,6 +49,7 @@ router.post('', upload.single('file'), async (req, res) => {
     await user.save();
     await newDocument.save();
     res.status(200).send({
+      type,
       documentId: newDocument._id,
     });
   } catch (err) {
