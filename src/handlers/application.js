@@ -26,8 +26,16 @@ const updateApplication = async (req, res, next) => {
     if (!application) {
       return res.status(404).json({message: 'Application not found'});
     }
-    req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
-    console.log(req.body);
+    if (req.body.DOB) {
+      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    }
+    if (req.body.workAuth) {
+      req.body.workAuth.StartDate =
+    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
+      req.body.workAuth.EndDate =
+    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
+    }
+
     // Update the application with fields from req.body.craft
     Object.assign(application, req.body);
 
@@ -49,8 +57,15 @@ const createApplication = async (req, res, next) => {
     if (!author) {
       return res.status(404).json({message: 'User not found'});
     }
-
-    req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    if (req.body.DOB) {
+      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    }
+    if (req.body.workAuth) {
+      req.body.workAuth.StartDate =
+    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
+      req.body.workAuth.EndDate =
+    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
+    }
     const application = await db.Application.create({...req.body,
       creator: author._id});
 

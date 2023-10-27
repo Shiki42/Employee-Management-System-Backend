@@ -23,7 +23,6 @@ const referrer = {
   },
   relationship: {
     type: String,
-    required: true,
   },
 };
 
@@ -43,17 +42,20 @@ const emergencyContact = {
 
 
 const workAuth= {
-  type: String,
-  enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
-  workAuthStartDate: {
+  type: {
+    type: String,
+    enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
+    required: true,
+  },
+  StartDate: {
     type: Date,
     required: true,
   },
-  workAuthEndDate: {
+  EndDate: {
     type: Date,
     required: true,
   },
-  workAuthOther: {
+  Other: {
     type: String,
   },
 };

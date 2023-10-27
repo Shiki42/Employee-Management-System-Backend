@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const {signup, signin, invite} = require('./handlers/auth');
+const {signup, signin, invite, getProfileStatus} = require('./handlers/auth');
 const {createApplication, updateApplication,
   getApplicationsById, getApplicationsByUser} =
   require('./handlers/application');
@@ -20,9 +20,12 @@ app.use((req, res, next) => {
   console.log(req.method, req.path, req.body);
   next();
 });
+
+app.post('/api/user/status', getProfileStatus);
 app.post('/api/user/invite', invite);
 app.post('/api/user/signup', signup);
 app.post('/api/user/signin', signin);
+
 
 app.get('/api/application/:id', getApplicationsById);
 app.get('/api/user/:username/application', getApplicationsByUser);

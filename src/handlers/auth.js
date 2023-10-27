@@ -80,6 +80,27 @@ const signin = async (req, res, next) => {
   }
 };
 
+
+const getProfileStatus = async (req, res, next) => {
+  try {
+    const {token} = req.body;
+    console.log('token', token);
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const user = await db.User.findOne({email: decoded.email});
+    const application = await db.Application.findOne({creator: user._id});
+    return res.status(200).json({
+      applicationId: application?._id || null,
+      applicationStatus: application?.status || null,
+    });
+  } catch (err) {
+    return next({
+      status: 400,
+      message: err,
+    });
+  }
+};
+
+
 // Invite new employee
 // params: req.body.email
 const invite = async (req, res) => {
@@ -115,4 +136,4 @@ const invite = async (req, res) => {
   res.status(200).send('Token generated and email sent.');
 };
 
-module.exports = {signup, signin, invite};
+module.exports = {signup, signin, invite, getProfileStatus};

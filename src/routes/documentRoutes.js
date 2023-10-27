@@ -18,11 +18,8 @@ const upload = multer({storage: storage});
 
 router.post('', upload.single('file'), async (req, res) => {
   try {
-    const {username} = req.body;
+    const {username, type} = req.body;
     const file = req.file; // Uploaded files will be stored in req.file
-
-    console.log(username);
-    console.log(file);
 
     const user = await User.findOne({name: username});
     const newDocument = new Document({
@@ -31,6 +28,21 @@ router.post('', upload.single('file'), async (req, res) => {
       user: user._id,
     });
 
+    if (type === 'optReceipt') {
+      user.visaStatus.optReceipt.docId = newDocument._id;
+    } else if (type === 'optEad') {
+      user.visaStatus.optEad.docId = newDocument._id;
+    } else if (type === 'i983') {
+      user.visaStatus.i983.docId = newDocument._id;
+    } else if (type === 'i20') {
+      user.visaStatus.i20.docId = newDocument._id;
+    } else if (type === 'driverLicense') {
+      user.driverLicense = newDocument._id;
+    } else if (type === 'profilePicture') {
+      user.profilePicture = newDocument._id;
+    }
+
+    await user.save();
     await newDocument.save();
     res.status(200).send({
       documentId: newDocument._id,

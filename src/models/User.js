@@ -35,12 +35,57 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Document',
   }],
-  // visaStatus: {
-  //   type: String,
-  //   enum: ['citizen', 'green card', 'H1B', 'F1'],
-  //   default: 'citizen',
-  //   required: true,
-  // },
+  visaStatus: {
+    status: {
+      type: String,
+      enum: ['optReceipt', 'optEad', 'i983', 'i20'],
+      default: 'optReceipt',
+    },
+    optReceipt: {
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+      },
+      docId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Document',
+      },
+    },
+    optEad: {
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+      },
+      docId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Document',
+      },
+    },
+    i983: {
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+      },
+      docId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Document',
+      },
+    },
+    i20: {
+      status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending',
+      },
+      docId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Document',
+      },
+    },
+  },
 });
 
 userSchema.pre('save', async function(next) {

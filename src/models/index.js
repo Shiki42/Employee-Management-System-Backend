@@ -4,7 +4,6 @@ const Token = require('./Token');
 
 const Application = require('./Application');
 const Profile = require('./Profile');
-const VisaStatus = require('./VisaStatus');
 const Document = require('./Document');
 const connectDB = async () => {
   try {
@@ -19,4 +18,4 @@ const connectDB = async () => {
 
 connectDB();
 
-module.exports = {User, Token, Document, Application, Profile, VisaStatus};
+module.exports = {User, Token, Document, Application, Profile};

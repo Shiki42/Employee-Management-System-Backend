@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const {referrer, emergencyContact, workAuth} = require('./SharedFields');
-
 // const checkRequired = () => {
 //   return this.status !== 'draft';
 // };
@@ -78,19 +77,20 @@ const applicationSchema = new Schema({
   },
   citizenship: {
     type: String,
-    enum: ['citizen', 'green card', 'other'],
+    enum: ['citizen', 'green card', 'no'],
     required: true,
   },
   workAuth: workAuth,
   referrer: referrer,
   emergencyContacts: [emergencyContact],
-  workAuthFile: {
-    type: Schema.Types.ObjectId,
-    ref: 'File',
-  },
+
   driverLicense: {
     type: Schema.Types.ObjectId,
-    ref: 'File',
+    ref: 'Document',
+  },
+  profilePicture: {
+    type: Schema.Types.ObjectId,
+    ref: 'Document',
   },
 });
 
