@@ -107,35 +107,40 @@ const getProfileStatus = async (req, res, next) => {
 // params: req.body.email
 const invite = async (req, res) => {
   // Generate a unique token
-  const email = req.body.email;
-  const token = jwt.sign(
-      {
-        email,
+  try {
+    const email = req.body.email;
+    const token = jwt.sign(
+        {
+          email,
+        },
+        process.env.JWT_SECRET_KEY, {
+          expiresIn: '3h',
+        });
+
+    const registrationLink = `http://localhost:5173/register?token=${token}&email=${encodeURIComponent(email)}`;
+
+    // Create a transporter object using the default SMTP transport
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'hushuyuan42@gmail.com',
+        pass: process.env.emailPassword,
       },
-      process.env.JWT_SECRET_KEY, {
-        expiresIn: '3h',
-      });
+    });
 
-  const registrationLink = `http://localhost:5173/register?token=${token}&email=${encodeURIComponent(email)}`;
+    // Send email to new employee
+    await transporter.sendMail({
+      from: '"Chuwa Human Resource" <hushuyuan42@gmail.com>',
+      to: email,
+      subject: 'Registration Link',
+      text: `Please click on the link to register: ${registrationLink}`,
+    });
 
-  // Create a transporter object using the default SMTP transport
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'hushuyuan42@gmail.com',
-      pass: process.env.emailPassword,
-    },
-  });
-
-  // Send email to new employee
-  await transporter.sendMail({
-    from: '"Chuwa Human Resource" <hushuyuan42@gmail.com>',
-    to: email,
-    subject: 'Registration Link',
-    text: `Please click on the link to register: ${registrationLink}`,
-  });
-
-  res.status(200).send('Token generated and email sent.');
+    res.status(200).send('Token generated and email sent.');
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
 };
 
 module.exports = {signup, signin, invite, getProfileStatus};

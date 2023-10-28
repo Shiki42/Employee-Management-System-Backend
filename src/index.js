@@ -4,10 +4,9 @@ const express = require('express');
 const cors = require('cors');
 
 const {signup, signin, invite, getProfileStatus} = require('./handlers/auth');
-const {createApplication, updateApplication,
-  getApplicationsById, getApplicationsByUser} =
-  require('./handlers/application');
-const {createProfile, updateProfile} = require('./handlers/profile');
+const {createProfile, updateProfile,
+  getProfileByUser, getProfiles, searchProfiles} =
+  require('./handlers/profile');
 const {errorHandler} = require('./middlewares/error');
 
 const documentRoutes = require('./routes/documentRoutes');
@@ -27,17 +26,19 @@ app.post('/api/user/signup', signup);
 app.post('/api/user/signin', signin);
 
 
-app.get('/api/application/:id', getApplicationsById);
-app.get('/api/user/:username/application', getApplicationsByUser);
-app.post('/api/application', createApplication);
-app.put('/api/application/:id', updateApplication);
+// app.get('/api/application/:id', getProfileById);
+app.post('/api/application', createProfile);
+app.put('/api/application/:id', updateProfile);
 
-app.get('/api/user/:username/profile', getApplicationsByUser);
+app.get('/api/profiles/search', searchProfiles);
+app.get('/api/profiles/', getProfiles);
+app.get('/api/user/:username/profile', getProfileByUser);
 app.post('/api/profile', createProfile);
 app.put('/api/profile', updateProfile);
 
 app.use('/api/document', documentRoutes);
 
+app.get('api/users/visaStatus/ongoing');
 app.use(errorHandler);
 app.listen(3050, () => {
   console.log('Example app listening on port 3050!');

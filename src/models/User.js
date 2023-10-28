@@ -35,15 +35,28 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Document',
   }],
-  workAuthType: {
-    type: String,
-    enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
-    required: true,
+  workAuth: {
+    type: {
+      type: String,
+      enum: ['H1-B', 'L2', 'F1(CPT/OPT)', 'H4', 'Other', 'N/A'],
+      required: true,
+    },
+    StartDate: {
+      type: Date,
+      required: true,
+    },
+    EndDate: {
+      type: Date,
+      required: true,
+    },
+    Other: {
+      type: String,
+    },
   },
   visaStatus: {
     status: {
       type: String,
-      enum: ['optReceipt', 'optEad', 'i983', 'i20'],
+      enum: ['optReceipt', 'optEad', 'i983', 'i20', 'approved'],
       default: 'optReceipt',
     },
     optReceipt: {

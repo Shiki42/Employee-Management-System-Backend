@@ -4,7 +4,7 @@ const {referrer, emergencyContact, workAuth} = require('./SharedFields');
 // const checkRequired = () => {
 //   return this.status !== 'draft';
 // };
-const applicationSchema = new Schema({
+const profileSchema = new Schema({
   status: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
@@ -94,6 +94,6 @@ const applicationSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Application', applicationSchema);
+module.exports = mongoose.model('Profile', profileSchema);
 
 

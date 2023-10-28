@@ -58,12 +58,25 @@ router.post('', upload.single('file'), async (req, res) => {
   }
 });
 
-router.get('/documents', async (req, res) => {
-  const documents = await Document.find({});
-  res.status(200).json(documents);
+router.get('/:id', async (req, res) => {
+  try {
+    const document = await Document.findById(req.params.id);
+    if (!document) {
+      return res.status(404).json({message: 'Document not found'});
+    }
+
+    const filePath = path.join(__dirname, '../uploads/', document.filename);
+    if (fs.existsSync(filePath)) {
+      return res.sendFile(filePath);
+    } else {
+      return res.status(404).json({message: 'File not found'});
+    }
+  } catch (err) {
+    return res.status(500).json({message: 'Internal Server Error'});
+  }
 });
 
-router.put('/update/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
   const {id} = req.params;
   const {status, feedback} = req.body;
 

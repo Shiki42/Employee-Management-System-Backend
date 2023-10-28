@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const User = require('./User');
 const Token = require('./Token');
 
-const Application = require('./Application');
-const Profile = require('./Profile');
+const Profile = require('./Application');
 const Document = require('./Document');
 const connectDB = async () => {
   try {
@@ -18,4 +17,4 @@ const connectDB = async () => {
 
 connectDB();
 
-module.exports = {User, Token, Document, Application, Profile};
+module.exports = {User, Token, Document, Profile};

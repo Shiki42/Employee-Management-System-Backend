@@ -1,16 +1,14 @@
 const db = require('../models');
-
+const moment = require('moment');
 
 const getProfileByUser = async (req, res, next) => {
   try {
-    const user = await db.User.findOne({name: req.params.username});
+    const user = await db.User.findOne({_id: req.params.username});
+    const profile = await db.Profile.findOne({creator: user._id});
 
-    if (!user) {
-      return res.status(404).json({message: 'User not found'});
+    if (!profile) {
+      return res.status(404).json({message: 'Profile not found'});
     }
-
-    const profile = await db.Profile.findOne({_id: user.profile});
-
 
     return res.status(200).json({
       profile,
@@ -20,23 +18,42 @@ const getProfileByUser = async (req, res, next) => {
   }
 };
 
-const createProfile = async (req, res, next) => {
+const getProfiles = async (req, res, next) => {
   try {
-    const user = await db.User.findOne({name: req.body.username});
+    const profiles = await db.Profile.find({});
 
-    if (!user) {
-      return res.status(404).json({message: 'User not found'});
+    if (!profiles) {
+      return res.status(404).json({message: 'Profile not found'});
     }
 
-    const profile = await db.Profile.create(req.body);
-
-    user.profile= profile._id;
-
-    await user.save();
-
     return res.status(200).json({
-      profile,
+      profiles,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const searchProfiles = async (req, res, next) => {
+  try {
+    const regex = new RegExp(req.query.name, 'i');
+
+    const users = await db.User.find({
+      $or: [
+        {firstName: regex},
+        {lastName: regex},
+      ],
+    });
+
+    const userIds = users.map((user) => user._id);
+
+    const profiles = await db.Profile.find({creator: {$in: userIds}});
+
+    if (profiles.length === 0) {
+      return res.status(404).json({message: 'Profile not found'});
+    }
+
+    return res.status(200).json({profiles});
   } catch (err) {
     next(err);
   }
@@ -44,25 +61,79 @@ const createProfile = async (req, res, next) => {
 
 const updateProfile = async (req, res, next) => {
   try {
-    const user = await db.User.findOne({name: req.body.username});
+    const author = await db.User.findOne({name: req.body.username});
 
-    if (!user) {
+    const profile = await db.Profile.findOne({creator: author._id});
+
+    if (!author) {
       return res.status(404).json({message: 'User not found'});
     }
+    if (req.body.DOB) {
+      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    }
+    if (req.body.workAuth) {
+      req.body.workAuth.StartDate =
+    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
+      req.body.workAuth.EndDate =
+    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
+    }
 
-    const profile = await db.Profile.findOne({_id: user.profile});
 
-    Object.assign(profile, req.body);
+    author.applicationStatus = 'pending';
+    author.application = profile._id;
+    if (req.body.workAuth) {
+      author.workAuthType = req.body.workAuth.type;
+    }
+    if (req.body.visaStatus) {
+      author.visaStatus = req.body.visaStatus;
+    }
+    await author.save();
 
-    await profile.save();
+    return res.status(200).json(
+        profile,
+    );
+  } catch (err) {
+    next(err);
+  }
+};
 
-    return res.status(200).json({
-      profile,
-    });
+const createProfile = async (req, res, next) => {
+  try {
+    const author = await db.User.findOne({name: req.body.username});
+
+    if (!author) {
+      return res.status(404).json({message: 'User not found'});
+    }
+    if (req.body.DOB) {
+      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    }
+    if (req.body.workAuth) {
+      req.body.workAuth.StartDate =
+    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
+      req.body.workAuth.EndDate =
+    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
+    }
+    const application = await db.Profile.create({...req.body,
+      creator: author._id});
+
+    author.applicationStatus = 'pending';
+    author.application = application._id;
+    if (req.body.workAuth) {
+      author.workAuthType = req.body.workAuth.type;
+    }
+    if (req.body.visaStatus) {
+      author.visaStatus = req.body.visaStatus;
+    }
+    await author.save();
+
+    return res.status(200).json(
+        application,
+    );
   } catch (err) {
     next(err);
   }
 };
 
 
-module.exports = {getProfileByUser, createProfile, updateProfile};
+module.exports = {createProfile, updateProfile,
+  getProfileByUser, getProfiles, searchProfiles};
