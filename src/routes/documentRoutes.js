@@ -48,7 +48,8 @@ router.post('', upload.single('file'), async (req, res) => {
 
     await user.save();
     await newDocument.save();
-    res.status(200).send({
+    console.log('documentId: newDocument._id', newDocument._id);
+    res.status(200).json({
       type,
       documentId: newDocument._id,
     });

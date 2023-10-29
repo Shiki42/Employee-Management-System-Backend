@@ -1,9 +1,30 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-unused-vars */
 const db = require('../models');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 
+const create_test_users = async () => {
+  try {
+    const user1 = await db.User.create({
+      name: 'user1',
+      email: '1@1.cn',
+      password: '123qwe',
+      role: 'employee',
+    });
+    const user2 = await db.User.create({
+      name: 'user2',
+      email: '1@2.cn',
+      password: '123qwe',
+      role: 'employee',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+// create_test_users();
 const signup = async (req, res) => {
   try {
     // const token = req.headers.authorization.split(' ')[1];
@@ -18,7 +39,7 @@ const signup = async (req, res) => {
     //   });
     // }
 
-    const user = await db.User.create({email, password, name, role: 'HR'});
+    const user = await db.User.create({email, password, name});
     console.log(user);
     const {role} = user;
     const jwtToken = jwt.sign(

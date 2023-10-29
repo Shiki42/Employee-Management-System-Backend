@@ -7,9 +7,11 @@ const nodemailer = require('nodemailer');
 const getEmployeesStatusOngoing = async (req, res) => {
   try {
     const users = await db.User.find({role: 'employee'});
+
     const usersStatusOngoing = users.filter((user) => {
-      return user.visaStatus !== 'approved';
+      return user.visaStatus.status !== 'approved';
     });
+
     return res.status(200).json({
       usersStatusOngoing,
     });

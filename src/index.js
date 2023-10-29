@@ -5,8 +5,11 @@ const cors = require('cors');
 
 const {signup, signin, invite, getProfileStatus} = require('./handlers/auth');
 const {createProfile, updateProfile,
-  getProfileByUser, getProfileByUserId, getProfiles, searchProfiles} =
+  getProfileByUser, getProfileByUserId, getProfileByAppId,
+  getProfiles, searchProfiles} =
   require('./handlers/profile');
+
+const {getEmployeesStatusOngoing} = require('./handlers/employee');
 const {errorHandler} = require('./middlewares/error');
 
 const documentRoutes = require('./routes/documentRoutes');
@@ -26,7 +29,7 @@ app.post('/api/user/signup', signup);
 app.post('/api/user/signin', signin);
 
 
-// app.get('/api/application/:id', getProfileById);
+app.get('/api/application/:id', getProfileByAppId);
 app.post('/api/application', createProfile);
 app.put('/api/application/:id', updateProfile);
 
@@ -40,7 +43,7 @@ app.put('/api/profile', updateProfile);
 
 app.use('/api/document', documentRoutes);
 
-app.get('api/users/visaStatus/ongoing');
+app.get('/api/users/visaStatus/ongoing', getEmployeesStatusOngoing);
 app.use(errorHandler);
 app.listen(3050, () => {
   console.log('Example app listening on port 3050!');

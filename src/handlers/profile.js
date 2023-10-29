@@ -18,6 +18,23 @@ const getProfileByUser = async (req, res, next) => {
   }
 };
 
+const getProfileByAppId = async (req, res, next) => {
+  try {
+    const application = await db.Profile.findOne({_id: req.params.id});
+
+    if (!application) {
+      return res.status(404).json({message: 'Profile not found'});
+    }
+
+    return res.status(200).json({
+      application,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 const getProfileByUserId = async (req, res, next) => {
   try {
     const profile = await db.Profile.findOne({creator: req.params.id});
@@ -152,4 +169,5 @@ const createProfile = async (req, res, next) => {
 
 
 module.exports = {createProfile, updateProfile,
-  getProfileByUser, getProfiles, searchProfiles, getProfileByUserId};
+  getProfileByUser, getProfiles, searchProfiles,
+  getProfileByUserId, getProfileByAppId};
