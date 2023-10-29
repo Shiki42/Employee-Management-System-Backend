@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const db = require('../models');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -9,15 +10,15 @@ const signup = async (req, res) => {
 
 
     const {name, email, password, token} = req.body;
-    const DBtoken = db.Token.findOne({token: token});
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-    if (decoded.email !== email || DBtoken.expireDate < Date.now()) {
-      return res.status(400).json({
-        message: 'Invalid token',
-      });
-    }
+    // const DBtoken = db.Token.findOne({token: token});
+    // const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    // if (decoded.email !== email || DBtoken.expireDate < Date.now()) {
+    //   return res.status(400).json({
+    //     message: 'Invalid token',
+    //   });
+    // }
 
-    const user = await db.User.create({email, password, name});
+    const user = await db.User.create({email, password, name, role: 'HR'});
     console.log(user);
     const {role} = user;
     const jwtToken = jwt.sign(
@@ -50,7 +51,7 @@ const signin = async (req, res, next) => {
     }
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
-      const application = await db.Application.findOne({creator: user._id});
+      const application = await db.Profile.findOne({creator: user._id});
       const {role, email, visaStatus, workAuthType} = user;
       const token = jwt.sign(
           {
@@ -88,7 +89,7 @@ const getProfileStatus = async (req, res, next) => {
     const {token} = req.body;
     const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
     const user = await db.User.findOne({email: decoded.email});
-    const application = await db.Application.findOne({creator: user._id});
+    const application = await db.Profile.findOne({creator: user._id});
     return res.status(200).json({
       applicationId: application?._id || null,
       applicationStatus: application?.status || null,

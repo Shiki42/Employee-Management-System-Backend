@@ -3,8 +3,24 @@ const moment = require('moment');
 
 const getProfileByUser = async (req, res, next) => {
   try {
-    const user = await db.User.findOne({_id: req.params.username});
+    const user = await db.User.findOne({name: req.params.username});
     const profile = await db.Profile.findOne({creator: user._id});
+
+    if (!profile) {
+      return res.status(404).json({message: 'Profile not found'});
+    }
+
+    return res.status(200).json({
+      profile,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getProfileByUserId = async (req, res, next) => {
+  try {
+    const profile = await db.Profile.findOne({creator: req.params.id});
 
     if (!profile) {
       return res.status(404).json({message: 'Profile not found'});
@@ -119,7 +135,7 @@ const createProfile = async (req, res, next) => {
     author.applicationStatus = 'pending';
     author.application = application._id;
     if (req.body.workAuth) {
-      author.workAuthType = req.body.workAuth.type;
+      author.workAuth = req.body.workAuth;
     }
     if (req.body.visaStatus) {
       author.visaStatus = req.body.visaStatus;
@@ -136,4 +152,4 @@ const createProfile = async (req, res, next) => {
 
 
 module.exports = {createProfile, updateProfile,
-  getProfileByUser, getProfiles, searchProfiles};
+  getProfileByUser, getProfiles, searchProfiles, getProfileByUserId};

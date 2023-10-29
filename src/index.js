@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const {signup, signin, invite, getProfileStatus} = require('./handlers/auth');
 const {createProfile, updateProfile,
-  getProfileByUser, getProfiles, searchProfiles} =
+  getProfileByUser, getProfileByUserId, getProfiles, searchProfiles} =
   require('./handlers/profile');
 const {errorHandler} = require('./middlewares/error');
 
@@ -32,7 +32,9 @@ app.put('/api/application/:id', updateProfile);
 
 app.get('/api/profiles/search', searchProfiles);
 app.get('/api/profiles/', getProfiles);
-app.get('/api/user/:username/profile', getProfileByUser);
+app.get('/api/user/:id/profile', getProfileByUserId);
+// app.get('/api/user/:username/profile', getProfileByUser);
+
 app.post('/api/profile', createProfile);
 app.put('/api/profile', updateProfile);
 
