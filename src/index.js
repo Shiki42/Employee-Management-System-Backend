@@ -14,6 +14,7 @@ const {getEmployeesStatusOngoing, getAllTokens,
   updateEmpolyeeStatus, sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
+const {ensureAdminAuthorization} = require('./middlewares/auth');
 const documentRoutes = require('./routes/documentRoutes');
 
 const app = express();
@@ -45,10 +46,16 @@ app.get('/api/user/:id/profile', getProfileByUserId);
 app.put('/api/profile', updateProfile);
 
 // HR apis
-app.get('/api/users/visaStatus/ongoing', getEmployeesStatusOngoing);
-app.put('/api/user/:id/visaStatus', updateEmpolyeeStatus);
-app.post('/api/notification', sendNotification);
-app.get('/api/tokens', getAllTokens);
+app.get('/api/tokens', ensureAdminAuthorization, getAllTokens);
+app.get('/api/user/:id/application',
+    ensureAdminAuthorization, getProfileByUserId);
+app.get('/api/users/visaStatus/ongoing', ensureAdminAuthorization,
+    getEmployeesStatusOngoing);
+app.put('/api/user/:id/visaStatus', ensureAdminAuthorization,
+    updateEmpolyeeStatus);
+app.post('/api/notification', ensureAdminAuthorization,
+    sendNotification);
+
 // document apis
 app.use('/api/document', documentRoutes);
 app.use(errorHandler);
