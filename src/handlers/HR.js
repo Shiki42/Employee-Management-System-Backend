@@ -26,13 +26,24 @@ const getEmployeesStatusOngoing = async (req, res) => {
   }
 };
 
+const VisaStatusNextSteps = {
+  'optReceipt': 'optEad',
+  'optEad': 'i983',
+  'i983': 'i20',
+};
+
 const updateEmpolyeeStatus = async (req, res) => {
   try {
     const id = req.params.id;
+    console.log('id', id);
     const {type, status} = req.body;
     const user = await db.User.findOne({_id: id});
     if (user) {
       user.visaStatus[type].status = status;
+      if (status === 'approved' &&
+      user.visaStatus[VisaStatusNextSteps[type]].status == 'N/A') {
+        user.visaStatus[VisaStatusNextSteps[type]].status = 'need to upload';
+      }
       await user.save(); // Save the changes to the database
       return res.status(200).json('updateEmpolyeeStatus success');
     } else {

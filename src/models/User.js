@@ -60,7 +60,7 @@ const userSchema = new Schema({
     optReceipt: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        enum: ['pending', 'approved', 'rejected', 'N/A', 'need to upload'],
         default: 'N/A',
       },
       docId: {

@@ -3,13 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
-const {signup, signin, invite, getProfileStatus} = require('./handlers/auth');
+const {signup, signin, invite} = require('./handlers/auth');
 const {createProfile, updateProfile,
   getProfileByUser, getProfileByUserId, getProfileByAppId,
   getProfiles, searchProfiles} =
   require('./handlers/profile');
 
-const {getEmployeesStatus} = require('./handlers/employee');
+const {getEmployeesStatus, getProfileStatus} = require('./handlers/employee');
 const {getEmployeesStatusOngoing,
   updateEmpolyeeStatus, sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');

@@ -104,7 +104,7 @@ const signin = async (req, res, next) => {
     const isMatch = await user.comparePassword(password);
     if (isMatch) {
       const application = await db.Profile.findOne({creator: user._id});
-      const {role, email, visaStatus, workAuthType} = user;
+      const {role, email, visaStatus, workAuth} = user;
       const token = jwt.sign(
           {
             email,
@@ -121,31 +121,11 @@ const signin = async (req, res, next) => {
         role,
         token,
         visaStatus,
-        workAuthType,
+        workAuth,
       });
     }
     return res.status(400).json({
       message: 'Invalid Email/Password',
-    });
-  } catch (err) {
-    return next({
-      status: 400,
-      message: err,
-    });
-  }
-};
-
-
-const getProfileStatus = async (req, res, next) => {
-  try {
-    const {token} = req.body;
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-    const user = await db.User.findOne({email: decoded.email});
-    const application = await db.Profile.findOne({creator: user._id});
-    return res.status(200).json({
-      applicationId: application?._id || null,
-      applicationStatus: application?.status || null,
-      visaStatus: user?.visaStatus || null,
     });
   } catch (err) {
     return next({
@@ -196,4 +176,4 @@ const invite = async (req, res) => {
   }
 };
 
-module.exports = {signup, signin, invite, getProfileStatus};
+module.exports = {signup, signin, invite};

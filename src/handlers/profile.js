@@ -92,42 +92,6 @@ const searchProfiles = async (req, res, next) => {
   }
 };
 
-const updateProfile = async (req, res, next) => {
-  try {
-    const author = await db.User.findOne({name: req.body.username});
-
-    const profile = await db.Profile.findOne({creator: author._id});
-
-    if (!author) {
-      return res.status(404).json({message: 'User not found'});
-    }
-    if (req.body.DOB) {
-      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
-    }
-    if (req.body.workAuth) {
-      req.body.workAuth.StartDate =
-    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
-      req.body.workAuth.EndDate =
-    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
-    }
-
-    Object.assign(profile, req.body);
-
-    if (req.body.workAuth) {
-      author.workAuthType = req.body.workAuth.type;
-    }
-    if (req.body.visaStatus) {
-      author.visaStatus = req.body.visaStatus;
-    }
-    await author.save();
-    await profile.save();
-    return res.status(200).json(
-        profile,
-    );
-  } catch (err) {
-    next(err);
-  }
-};
 
 const createProfile = async (req, res, next) => {
   try {
@@ -166,7 +130,9 @@ const createProfile = async (req, res, next) => {
   }
 };
 
-const updateApplication = async (req, res, next) => {
+// updateProfile和 update application的逻辑完全一样，除了如果是reject的话，
+// 要把applicationStatus改成pending
+const updateProfile = async (req, res, next) => {
   try {
     const author = await db.User.findOne({name: req.body.username});
 
@@ -184,19 +150,22 @@ const updateApplication = async (req, res, next) => {
       req.body.workAuth.EndDate =
     moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
     }
+
+    Object.assign(profile, req.body);
+
+    // 唯一不同的一行
     if (author.applicationStatus === 'rejected') {
       author.applicationStatus = 'pending';
     }
 
-    author.application = profile._id;
     if (req.body.workAuth) {
-      author.workAuthType = req.body.workAuth.type;
+      author.workAuth = req.body.workAuth;
     }
     if (req.body.visaStatus) {
       author.visaStatus = req.body.visaStatus;
     }
     await author.save();
-
+    await profile.save();
     return res.status(200).json(
         profile,
     );
@@ -205,7 +174,7 @@ const updateApplication = async (req, res, next) => {
   }
 };
 
+
 module.exports = {createProfile, updateProfile,
   getProfileByUser, getProfiles, searchProfiles,
-  getProfileByUserId, getProfileByAppId,
-  updateApplication};
+  getProfileByUserId, getProfileByAppId};
