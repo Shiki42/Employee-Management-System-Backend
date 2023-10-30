@@ -5,7 +5,7 @@ const path = require('path');
 const Document = require('../models/Document');
 const User = require('../models/User');
 const router = express.Router();
-
+const fs = require('fs');
 const storage = multer.diskStorage({
   destination: './uploads/',
   filename: (req, file, cb) => {
@@ -66,13 +66,16 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({message: 'Document not found'});
     }
 
-    const filePath = path.join(__dirname, '../uploads/', document.filename);
+    const filePath = path.join(__dirname, '..',
+        '..', 'uploads', document.filename);
+    console.log('filePath', filePath);
     if (fs.existsSync(filePath)) {
       return res.sendFile(filePath);
     } else {
       return res.status(404).json({message: 'File not found'});
     }
   } catch (err) {
+    console.log(err);
     return res.status(500).json({message: 'Internal Server Error'});
   }
 });
