@@ -175,6 +175,7 @@ const invite = async (req, res) => {
       text: `Please click on the link to register: ${registrationLink}`,
     });
 
+    const newToken = new db.Token({token: token, email: email});
     res.status(200).send('Token generated and email sent.');
   } catch (err) {
     console.log(err);

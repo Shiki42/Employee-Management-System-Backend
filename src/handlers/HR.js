@@ -82,5 +82,16 @@ const sendNotification = async (req, res, next) => {
     next(err);
   }
 };
+
+const getAllTokens = async (req, res, next) => {
+  try {
+    const tokens = await db.Token.find({});
+    return res.status(200).json({tokens});
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
 module.exports = {getEmployeesStatusOngoing, updateEmpolyeeStatus,
-  sendNotification};
+  sendNotification, getAllTokens};

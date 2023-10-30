@@ -10,7 +10,7 @@ const {createProfile, updateProfile,
   require('./handlers/profile');
 
 const {getEmployeesStatus, getProfileStatus} = require('./handlers/employee');
-const {getEmployeesStatusOngoing,
+const {getEmployeesStatusOngoing, getAllTokens,
   updateEmpolyeeStatus, sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
@@ -48,7 +48,7 @@ app.put('/api/profile', updateProfile);
 app.get('/api/users/visaStatus/ongoing', getEmployeesStatusOngoing);
 app.put('/api/user/:id/visaStatus', updateEmpolyeeStatus);
 app.post('/api/notification', sendNotification);
-
+app.get('/api/tokens', getAllTokens);
 // document apis
 app.use('/api/document', documentRoutes);
 app.use(errorHandler);

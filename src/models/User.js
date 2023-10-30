@@ -71,7 +71,7 @@ const userSchema = new Schema({
     optEad: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        enum: ['pending', 'approved', 'rejected', 'N/A', 'need to upload'],
         default: 'N/A',
       },
       docId: {
@@ -82,7 +82,7 @@ const userSchema = new Schema({
     i983: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        enum: ['pending', 'approved', 'rejected', 'N/A', 'need to upload'],
         default: 'N/A',
       },
       docId: {
@@ -93,7 +93,7 @@ const userSchema = new Schema({
     i20: {
       status: {
         type: String,
-        enum: ['pending', 'approved', 'rejected', 'N/A'],
+        enum: ['pending', 'approved', 'rejected', 'N/A', 'need to upload'],
         default: 'N/A',
       },
       docId: {
