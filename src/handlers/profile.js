@@ -111,9 +111,8 @@ const updateProfile = async (req, res, next) => {
     moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
     }
 
+    Object.assign(profile, req.body);
 
-    author.applicationStatus = 'pending';
-    author.application = profile._id;
     if (req.body.workAuth) {
       author.workAuthType = req.body.workAuth.type;
     }
@@ -121,7 +120,7 @@ const updateProfile = async (req, res, next) => {
       author.visaStatus = req.body.visaStatus;
     }
     await author.save();
-
+    await profile.save();
     return res.status(200).json(
         profile,
     );
@@ -167,7 +166,46 @@ const createProfile = async (req, res, next) => {
   }
 };
 
+const updateApplication = async (req, res, next) => {
+  try {
+    const author = await db.User.findOne({name: req.body.username});
+
+    const profile = await db.Profile.findOne({creator: author._id});
+
+    if (!author) {
+      return res.status(404).json({message: 'User not found'});
+    }
+    if (req.body.DOB) {
+      req.body.DOB = moment(req.body.DOB).format('YYYY-MM-DD');
+    }
+    if (req.body.workAuth) {
+      req.body.workAuth.StartDate =
+    moment(req.body.workAuth.StartDate).format('YYYY-MM-DD');
+      req.body.workAuth.EndDate =
+    moment(req.body.workAuth.EndDate).format('YYYY-MM-DD');
+    }
+    if (author.applicationStatus === 'rejected') {
+      author.applicationStatus = 'pending';
+    }
+
+    author.application = profile._id;
+    if (req.body.workAuth) {
+      author.workAuthType = req.body.workAuth.type;
+    }
+    if (req.body.visaStatus) {
+      author.visaStatus = req.body.visaStatus;
+    }
+    await author.save();
+
+    return res.status(200).json(
+        profile,
+    );
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {createProfile, updateProfile,
   getProfileByUser, getProfiles, searchProfiles,
-  getProfileByUserId, getProfileByAppId};
+  getProfileByUserId, getProfileByAppId,
+  updateApplication};

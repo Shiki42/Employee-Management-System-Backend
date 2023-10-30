@@ -8,17 +8,48 @@ const nodemailer = require('nodemailer');
 const create_test_users = async () => {
   try {
     const user1 = await db.User.create({
-      name: 'user1',
-      email: '1@1.cn',
+      name: 'user3',
+      email: '1@3.cn',
       password: '123qwe',
       role: 'employee',
     });
-    const user2 = await db.User.create({
-      name: 'user2',
-      email: '1@2.cn',
-      password: '123qwe',
-      role: 'employee',
+    const profile1 = await db.Profile.create({
+      'name': {
+        'firstName': 'Shuyuan',
+        'lastName': 'Hu',
+      },
+      'address': {
+        'building': '08',
+        'street': '1051 Southern Dr',
+        'city': 'Columbia',
+        'state': 'SC',
+        'zip': '29201',
+      },
+      'workAuth': {
+        'type': 'F1(CPT/OPT)',
+        'StartDate': '2023-10-24T00:00:00.000Z',
+        'EndDate': '2023-10-04T00:00:00.000Z',
+      },
+      'referrer': {
+        'name': {
+          'firstName': '1',
+          'lastName': '2',
+        },
+        'relationship': '3',
+      },
+      'status': 'pending',
+      'phoneNumber': '12137091760',
+      'email': 'hushuyuan42+job@gmail.com',
+      'SSN': '99922',
+      'DOB': '2023-10-04T00:00:00.000Z',
+      'gender': 'i do not wish to answer',
+      'citizenship': 'no',
+      'emergencyContacts': [],
     });
+    user1.application = profile1._id;
+    profile1.creator = user1._id;
+    await user1.save();
+    await profile1.save();
   } catch (err) {
     console.log(err);
   }

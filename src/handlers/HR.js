@@ -1,10 +1,36 @@
 const db = require('../models');
 const nodemailer = require('nodemailer');
 
+const getEmployeesStatusOngoing = async (req, res) => {
+  try {
+    const users = await db.User.find({role: 'employee'});
+
+    const usersStatusOngoing = users.filter((user) => {
+      return user.visaStatus.status !== 'approved';
+    });
+
+    const visaStatuses = usersStatusOngoing.map((user) => {
+      return {
+        id: user._id,
+        name: user.name,
+        workAuth: user.workAuth,
+        visaStatus: user.visaStatus,
+      };
+    });
+    return res.status(200).json({
+      visaStatuses,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({message: 'getEmployeesStatusOngoing error'});
+  }
+};
+
 const updateEmpolyeeStatus = async (req, res) => {
   try {
-    const {username, type, status} = req.body;
-    const user = await db.User.findOne({name: username});
+    const id = req.params.id;
+    const {type, status} = req.body;
+    const user = await db.User.findOne({_id: id});
     if (user) {
       user.visaStatus[type].status = status;
       await user.save(); // Save the changes to the database
@@ -45,4 +71,5 @@ const sendNotification = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = {updateEmpolyeeStatus, sendNotification};
+module.exports = {getEmployeesStatusOngoing, updateEmpolyeeStatus,
+  sendNotification};

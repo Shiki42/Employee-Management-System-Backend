@@ -9,7 +9,9 @@ const {createProfile, updateProfile,
   getProfiles, searchProfiles} =
   require('./handlers/profile');
 
-const {getEmployeesStatusOngoing} = require('./handlers/employee');
+const {getEmployeesStatus} = require('./handlers/employee');
+const {getEmployeesStatusOngoing,
+  updateEmpolyeeStatus, sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
 const documentRoutes = require('./routes/documentRoutes');
@@ -23,27 +25,32 @@ app.use((req, res, next) => {
   next();
 });
 
+// auth apis
 app.post('/api/user/status', getProfileStatus);
 app.post('/api/user/invite', invite);
 app.post('/api/user/signup', signup);
 app.post('/api/user/signin', signin);
 
-
+// onboading application apis
 app.get('/api/application/:id', getProfileByAppId);
 app.post('/api/application', createProfile);
 app.put('/api/application/:id', updateProfile);
 
+// empolyee profile apis
 app.get('/api/profiles/search', searchProfiles);
 app.get('/api/profiles/', getProfiles);
 app.get('/api/user/:id/profile', getProfileByUserId);
-// app.get('/api/user/:username/profile', getProfileByUser);
 
-app.post('/api/profile', createProfile);
+// app.post('/api/profile', createProfile);
 app.put('/api/profile', updateProfile);
 
-app.use('/api/document', documentRoutes);
-
+// HR apis
 app.get('/api/users/visaStatus/ongoing', getEmployeesStatusOngoing);
+app.put('/api/user/:id/visaStatus', updateEmpolyeeStatus);
+app.post('/api/notification', sendNotification);
+
+// document apis
+app.use('/api/document', documentRoutes);
 app.use(errorHandler);
 app.listen(3050, () => {
   console.log('Example app listening on port 3050!');
