@@ -28,6 +28,7 @@ const getEmployeesStatus = async (req, res) => {
   try {
     const users = await db.User.find({role: 'employee'});
 
+    console.log('all users', users);
     return res.status(200).json({
       users,
     });

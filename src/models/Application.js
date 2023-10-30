@@ -10,6 +10,9 @@ const profileSchema = new Schema({
     enum: ['pending', 'approved', 'rejected'],
     default: 'pending',
   },
+  feedback: {
+    type: String,
+  },
   creator: {
     type: Schema.Types.ObjectId,
     ref: 'User',

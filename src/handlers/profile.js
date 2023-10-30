@@ -154,8 +154,8 @@ const updateProfile = async (req, res, next) => {
     Object.assign(profile, req.body);
 
     // 唯一不同的一行
-    if (author.applicationStatus === 'rejected') {
-      author.applicationStatus = 'pending';
+    if (profile.status === 'rejected') {
+      profile.status = 'pending';
     }
 
     if (req.body.workAuth) {

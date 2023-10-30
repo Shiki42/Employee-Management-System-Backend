@@ -5,6 +5,7 @@ const getEmployeesStatusOngoing = async (req, res) => {
   try {
     const users = await db.User.find({role: 'employee'});
 
+
     const usersStatusOngoing = users.filter((user) => {
       return user.visaStatus.status !== 'approved';
     });
@@ -26,6 +27,28 @@ const getEmployeesStatusOngoing = async (req, res) => {
   }
 };
 
+const getEmployeeApplications = async (req, res, next) => {
+  try {
+    const originalapplications = await db.Profile.find(
+        {});
+    const applications = originalapplications.map((application) => {
+      return {
+        userId: application.creator,
+        id: application._id,
+        name: application.name.firstName + ' ' + application.name.lastName,
+        email: application.email,
+        status: application.status,
+      };
+    });
+    return res.status(200).json({
+      applications,
+    });
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+
 const VisaStatusNextSteps = {
   'optReceipt': 'optEad',
   'optEad': 'i983',
@@ -35,7 +58,6 @@ const VisaStatusNextSteps = {
 const updateEmpolyeeStatus = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log('id', id);
     const {type, status} = req.body;
     const user = await db.User.findOne({_id: id});
     if (user) {
@@ -52,6 +74,25 @@ const updateEmpolyeeStatus = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(400).json({message: 'updateEmpolyeeStatus error'});
+  }
+};
+
+const updateApplicationStatus = async (req, res, next) => {
+  try {
+    const {id, status, feedback} = req.body;
+
+    const application = await db.Profile.findOne({_id: id});
+    if (application) {
+      application.status = status;
+      application.feedback = feedback;
+      await application.save();
+      return res.status(200).json('update Application Status success');
+    } else {
+      return res.status(404).json({message: 'User/Application not found'});
+    }
+  } catch (err) {
+    console.log(err);
+    next(err);
   }
 };
 
@@ -93,5 +134,6 @@ const getAllTokens = async (req, res, next) => {
   }
 };
 
-module.exports = {getEmployeesStatusOngoing, updateEmpolyeeStatus,
+module.exports = {getEmployeeApplications, getEmployeesStatusOngoing,
+  updateEmpolyeeStatus, updateApplicationStatus,
   sendNotification, getAllTokens};

@@ -10,8 +10,9 @@ const {createProfile, updateProfile,
   require('./handlers/profile');
 
 const {getEmployeesStatus, getProfileStatus} = require('./handlers/employee');
-const {getEmployeesStatusOngoing, getAllTokens,
-  updateEmpolyeeStatus, sendNotification} = require('./handlers/HR');
+const {getEmployeesStatusOngoing, getAllTokens, getEmployeeApplications,
+  updateEmpolyeeStatus, updateApplicationStatus,
+  sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
 const {ensureAdminAuthorization} = require('./middlewares/auth');
@@ -49,12 +50,17 @@ app.put('/api/profile', updateProfile);
 app.get('/api/tokens', ensureAdminAuthorization, getAllTokens);
 app.get('/api/user/:id/application',
     ensureAdminAuthorization, getProfileByUserId);
+app.get('/api/applications',
+    ensureAdminAuthorization, getEmployeeApplications);
 app.get('/api/users/visaStatus/ongoing', ensureAdminAuthorization,
     getEmployeesStatusOngoing);
 app.put('/api/user/:id/visaStatus', ensureAdminAuthorization,
     updateEmpolyeeStatus);
+app.post('/api/applicationStatus', ensureAdminAuthorization,
+    updateApplicationStatus);
 app.post('/api/notification', ensureAdminAuthorization,
     sendNotification);
+
 
 // document apis
 app.use('/api/document', documentRoutes);
