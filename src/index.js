@@ -11,7 +11,7 @@ const {createProfile, updateProfile,
 
 const {getEmployeesStatus, getProfileStatus} = require('./handlers/employee');
 const {getEmployeesStatusOngoing, getAllTokens, getEmployeeApplications,
-  updateEmpolyeeStatus, updateApplicationStatus,
+  getAllEmployeesStatus, updateEmpolyeeStatus, updateApplicationStatus,
   sendNotification} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
@@ -54,6 +54,8 @@ app.get('/api/applications',
     ensureAdminAuthorization, getEmployeeApplications);
 app.get('/api/users/visaStatus/ongoing', ensureAdminAuthorization,
     getEmployeesStatusOngoing);
+app.get('/api/users/visaStatus/all', ensureAdminAuthorization,
+    getAllEmployeesStatus);
 app.put('/api/user/:id/visaStatus', ensureAdminAuthorization,
     updateEmpolyeeStatus);
 app.post('/api/applicationStatus', ensureAdminAuthorization,

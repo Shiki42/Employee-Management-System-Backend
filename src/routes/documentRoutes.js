@@ -28,6 +28,7 @@ router.post('', upload.single('file'), async (req, res) => {
       user: user._id,
     });
 
+    // user.visaStatus.status = 'optEad';
     if (type === 'optReceipt') {
       user.visaStatus.optReceipt.docId = newDocument._id;
       user.visaStatus.optReceipt.status = 'pending';

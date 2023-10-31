@@ -16,6 +16,7 @@ const getEmployeesStatusOngoing = async (req, res) => {
         name: user.name,
         workAuth: user.workAuth,
         visaStatus: user.visaStatus,
+        email: user.email,
       };
     });
     return res.status(200).json({
@@ -26,6 +27,34 @@ const getEmployeesStatusOngoing = async (req, res) => {
     return res.status(400).json({message: 'getEmployeesStatusOngoing error'});
   }
 };
+
+const getAllEmployeesStatus = async (req, res) => {
+  try {
+    const users = await db.User.find({role: 'employee'});
+
+
+    const usersStatusOngoing = users.filter((user) => {
+      return true;
+    });
+
+    const visaStatuses = usersStatusOngoing.map((user) => {
+      return {
+        id: user._id,
+        name: user.name,
+        workAuth: user.workAuth,
+        visaStatus: user.visaStatus,
+        email: user.email,
+      };
+    });
+    return res.status(200).json({
+      visaStatuses,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({message: 'getEmployeesStatusOngoing error'});
+  }
+};
+
 
 const getEmployeeApplications = async (req, res, next) => {
   try {
@@ -62,9 +91,12 @@ const updateEmpolyeeStatus = async (req, res) => {
     const user = await db.User.findOne({_id: id});
     if (user) {
       user.visaStatus[type].status = status;
-      if (status === 'approved' &&
+      if (status === 'approved' && VisaStatusNextSteps[type] &&
       user.visaStatus[VisaStatusNextSteps[type]].status == 'N/A') {
         user.visaStatus[VisaStatusNextSteps[type]].status = 'need to upload';
+        user.visaStatus.status = VisaStatusNextSteps[type];
+      } else if (status === 'approved' && !VisaStatusNextSteps[type]) {
+        user.visaStatus.status = 'approved';
       }
       await user.save(); // Save the changes to the database
       return res.status(200).json('updateEmpolyeeStatus success');
@@ -135,5 +167,5 @@ const getAllTokens = async (req, res, next) => {
 };
 
 module.exports = {getEmployeeApplications, getEmployeesStatusOngoing,
-  updateEmpolyeeStatus, updateApplicationStatus,
+  getAllEmployeesStatus, updateEmpolyeeStatus, updateApplicationStatus,
   sendNotification, getAllTokens};

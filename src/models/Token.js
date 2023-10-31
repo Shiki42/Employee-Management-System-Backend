@@ -21,6 +21,14 @@ const tokenSchema = new Schema({
     enum: ['pending', 'used', 'expired'],
     default: 'pending',
   },
+  link: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    default: 'N/A',
+  },
 });
 
 module.exports = mongoose.model('Token', tokenSchema);

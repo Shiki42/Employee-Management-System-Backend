@@ -68,15 +68,20 @@ const signup = async (req, res) => {
 
 
     const {name, email, password, token} = req.body;
-    // const DBtoken = db.Token.findOne({token: token});
-    // const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-    // if (decoded.email !== email || DBtoken.expireDate < Date.now()) {
-    //   return res.status(400).json({
-    //     message: 'Invalid token',
-    //   });
-    // }
-
+    const DBtoken = await db.Token.findOne({token: token});
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
+    if (decoded.email !== email || DBtoken.expireDate < Date.now()) {
+      if (DBtoken.expireDate < Date.now()) {
+        DBtoken.status = 'expired';
+      }
+      return res.status(400).json({
+        message: 'Invalid token',
+      });
+    }
     const user = await db.User.create({email, password, name});
+    DBtoken.name = name;
+    DBtoken.status = 'used';
+    await DBtoken.save();
     console.log(user);
     const {role} = user;
     const jwtToken = jwt.sign(
@@ -175,7 +180,9 @@ const invite = async (req, res) => {
       text: `Please click on the link to register: ${registrationLink}`,
     });
 
-    const newToken = new db.Token({token: token, email: email});
+    const newToken = new db.Token({token: token,
+      email: email, link: registrationLink});
+    await newToken.save();
     res.status(200).send('Token generated and email sent.');
   } catch (err) {
     console.log(err);
