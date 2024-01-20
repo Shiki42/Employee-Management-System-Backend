@@ -4,15 +4,26 @@ const express = require('express');
 const cors = require('cors');
 
 const {signup, signin, invite} = require('./handlers/auth');
-const {createProfile, updateProfile,
-  getProfileByUser, getProfileByUserId, getProfileByAppId,
-  getProfiles, searchProfiles} =
-  require('./handlers/profile');
+const {
+  createProfile,
+  updateProfile,
+  getProfileByUser,
+  getProfileByUserId,
+  getProfileByAppId,
+  getProfiles,
+  searchProfiles,
+} = require('./handlers/profile');
 
 const {getEmployeesStatus, getProfileStatus} = require('./handlers/employee');
-const {getEmployeesStatusOngoing, getAllTokens, getEmployeeApplications,
-  getAllEmployeesStatus, updateEmpolyeeStatus, updateApplicationStatus,
-  sendNotification} = require('./handlers/HR');
+const {
+  getEmployeesStatusOngoing,
+  getAllTokens,
+  getEmployeeApplications,
+  getAllEmployeesStatus,
+  updateEmpolyeeStatus,
+  updateApplicationStatus,
+  sendNotification,
+} = require('./handlers/HR');
 const {errorHandler} = require('./middlewares/error');
 
 const {ensureAdminAuthorization} = require('./middlewares/auth');
@@ -48,26 +59,37 @@ app.put('/api/profile', updateProfile);
 
 // HR apis
 app.get('/api/tokens', ensureAdminAuthorization, getAllTokens);
-app.get('/api/user/:id/application',
-    ensureAdminAuthorization, getProfileByUserId);
-app.get('/api/applications',
-    ensureAdminAuthorization, getEmployeeApplications);
-app.get('/api/users/visaStatus/ongoing', ensureAdminAuthorization,
-    getEmployeesStatusOngoing);
-app.get('/api/users/visaStatus/all', ensureAdminAuthorization,
-    getAllEmployeesStatus);
-app.put('/api/user/:id/visaStatus', ensureAdminAuthorization,
-    updateEmpolyeeStatus);
-app.post('/api/applicationStatus', ensureAdminAuthorization,
-    updateApplicationStatus);
-app.post('/api/notification', ensureAdminAuthorization,
-    sendNotification);
-
+app.get(
+    '/api/user/:id/application',
+    ensureAdminAuthorization,
+    getProfileByUserId,
+);
+app.get('/api/applications', ensureAdminAuthorization, getEmployeeApplications);
+app.get(
+    '/api/users/visaStatus/ongoing',
+    ensureAdminAuthorization,
+    getEmployeesStatusOngoing,
+);
+app.get(
+    '/api/users/visaStatus/all',
+    ensureAdminAuthorization,
+    getAllEmployeesStatus,
+);
+app.put(
+    '/api/user/:id/visaStatus',
+    ensureAdminAuthorization,
+    updateEmpolyeeStatus,
+);
+app.post(
+    '/api/applicationStatus',
+    ensureAdminAuthorization,
+    updateApplicationStatus,
+);
+app.post('/api/notification', ensureAdminAuthorization, sendNotification);
 
 // document apis
 app.use('/api/document', documentRoutes);
 app.use(errorHandler);
-app.listen(3050, () => {
+app.listen('localhost:8079', () => {
   console.log('Example app listening on port 3050!');
-},
-);
+});
